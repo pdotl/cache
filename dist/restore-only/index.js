@@ -1180,7 +1180,8 @@ function getCompressionMethod() {
     return __awaiter(this, void 0, void 0, function* () {
         const versionOutput = yield getVersion('zstd', ['--quiet']);
         const version = semver.clean(versionOutput);
-        if (versionOutput === '' || version === null) {
+        core.debug(`zstd version: ${version}`);
+        if (versionOutput === '') {
             // zstd is not installed
             return constants_1.CompressionMethod.Gzip;
         }
