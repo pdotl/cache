@@ -1152,12 +1152,14 @@ function unlinkFile(filePath) {
     });
 }
 exports.unlinkFile = unlinkFile;
-function getVersion(app) {
+function getVersion(app, args) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Checking ${app} --version`);
         let versionOutput = '';
+        typeof args !== 'undefined' ? args : (args = []);
+        args.push('--version');
         try {
-            yield exec.exec(`${app} --version`, [], {
+            yield exec.exec(`${app}`, args, {
                 ignoreReturnCode: true,
                 silent: true,
                 listeners: {
@@ -1177,7 +1179,7 @@ function getVersion(app) {
 // Use zstandard if possible to maximize cache performance
 function getCompressionMethod() {
     return __awaiter(this, void 0, void 0, function* () {
-        const versionOutput = yield getVersion('zstd');
+        const versionOutput = yield getVersion('zstd', ['--quiet']);
         core.debug(`versionOutput: ${versionOutput}`);
         const version = semver.clean(versionOutput);
         core.debug(`version: ${version}`);
