@@ -1178,7 +1178,9 @@ function getVersion(app) {
 function getCompressionMethod() {
     return __awaiter(this, void 0, void 0, function* () {
         const versionOutput = yield getVersion('zstd');
+        core.debug(`versionOutput: ${versionOutput}`);
         const version = semver.clean(versionOutput);
+        core.debug(`version: ${version}`);
         if (!versionOutput.toLowerCase().includes('zstd command line interface')) {
             // zstd is not installed
             return constants_1.CompressionMethod.Gzip;
