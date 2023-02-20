@@ -1208,14 +1208,13 @@ function unlinkFile(filePath) {
     });
 }
 exports.unlinkFile = unlinkFile;
-function getVersion(app, args) {
+function getVersion(app, additionalArgs = []) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug(`Checking ${app} --version`);
         let versionOutput = '';
-        typeof args !== 'undefined' ? args : (args = []);
-        args.push('--version');
+        additionalArgs.push('--version');
+        core.debug(`Checking ${app} ${additionalArgs.join(' ')}`);
         try {
-            yield exec.exec(`${app}`, args, {
+            yield exec.exec(`${app} `, additionalArgs, {
                 ignoreReturnCode: true,
                 silent: true,
                 listeners: {
@@ -1237,11 +1236,12 @@ function getCompressionMethod() {
     return __awaiter(this, void 0, void 0, function* () {
         const versionOutput = yield getVersion('zstd', ['--quiet']);
         const version = semver.clean(versionOutput);
-        if (version) {
-            return constants_1.CompressionMethod.ZstdWithoutLong;
+        if (versionOutput === '' || version === null) {
+            // zstd is not installed
+            return constants_1.CompressionMethod.Gzip;
         }
         else {
-            return constants_1.CompressionMethod.Gzip;
+            return constants_1.CompressionMethod.ZstdWithoutLong;
         }
     });
 }
